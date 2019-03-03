@@ -82,10 +82,6 @@ plt.grid()
 plt.title('CIB-lensed CMB correlation power spectrum')
 
 # ### Mask
-
-# In[12]:
-
-
 print(fsky_CMB, fsky_CIB)
 
 # Combined mask
@@ -148,8 +144,6 @@ plt.ylabel('$C_\ell^{\kappa I}$')
 
 # Correlated errors
 
-# In[17]:
-
 
 delta_cls = np.zeros(len(bins) - 1)
 len(delta_cls)
@@ -190,55 +184,66 @@ for k in range(0, len(bins) - 1):
     delta_cls_CIB[k] = 1. / delta_cls_CIB[k]
 delta_cls_CIB = np.sqrt(delta_cls_CIB)
 
+#
+# # Final CIB-lensed CMB correlation plot
+#
+# plt.plot(ell, correlated_cls / (2 * np.pi * fsky), alpha=0.3)
+# plt.errorbar(np.linspace(0, 1024, Nbins), binned_corr_cls / (2 * np.pi * fsky), delta_cls, linestyle='None', marker='o',
+#              markersize=4.5, capsize=3)
+# plt.plot(np.linspace(0, 1024, Nbins), binned_corr_cls / (2 * np.pi * fsky))
+# plt.xlabel('$\ell$')
+# plt.ylabel('$C_\ell^{\kappa I}/2 \pi [MJy/Sr] $')
+# plt.ylim(-0.05 * (10 ** -7), 0.2 * (10 ** -7))
+# # plt.savefig('Project/Correlated everything.png')
+#
+#
+#
+# plt.plot(ell, ell * correlated_cls / (2 * np.pi * fsky), alpha=0.3)
+# plt.errorbar(np.linspace(0, 1024, Nbins), np.linspace(0, 1024, Nbins) * binned_corr_cls / (2 * np.pi * fsky), delta_cls,
+#              linestyle='None', marker='o', markersize=4.5, capsize=3)
+# plt.plot(np.linspace(0, 1024, Nbins), np.linspace(0, 1024, Nbins) * binned_corr_cls / (2 * np.pi * fsky))
+# plt.xlabel('$\ell$')
+# plt.ylabel('$C_\ell^{\kappa I}/2 \pi [MJy/Sr] $')
+# # plt.ylim(-0.05*(10**-7), 0.2*(10**-7))
+# # plt.savefig('Project/Correlated everything.png')
+#
+#
+# # CIB power spectrum
+#
+# plt.plot(ell, cl_CIB / (2 * np.pi * fsky_CIB), label='CIB', alpha=0.3)
+# plt.errorbar(np.linspace(0, 1024, Nbins), binned_CIB / (2 * np.pi * fsky_CIB), delta_cls_CIB, linestyle='None',
+#              marker='o', markersize=4.5, capsize=3)
+# plt.plot(np.linspace(0, 1024, Nbins), binned_CIB / (2 * np.pi * fsky_CIB), label='Binned CIB')
+# plt.xlabel('$\ell$')
+# plt.ylabel('$C_\ell^{II}/2\pi$ [MJy/Sr]')
+# plt.legend(loc='best')
+# plt.ylim(0, 0.2 * (10 ** -7))
+# # plt.savefig('Project/CIB everything.png')
+#
+#
+# # Lensed CMB power spectrum
+#
+# plt.plot(ell, cl_CMB_lensing / (2 * np.pi * fsky_CMB), label='Lensed CMB', alpha=0.3)
+# plt.errorbar(np.linspace(0, 1024, Nbins), binned_CMB / (2 * np.pi * fsky_CMB), delta_cls_CMB, linestyle='None',
+#              marker='o', markersize=4.5, capsize=4)
+# plt.plot(np.linspace(0, 1024, Nbins), binned_CMB / (2 * np.pi * fsky_CMB), label='Binned Lensed CMB')
+# # plt.ylim(0, 5*(10**-7))
+#
+# plt.xlabel('$\ell$')
+# plt.ylabel('$C_\ell^{\kappa \kappa}/2\pi$')
+# plt.legend(loc='best')
+# plt.ylim(1.5 * (10 ** -7), 4.5 * (10 ** -7))
+# # plt.savefig('Project/2pi CMB plot.png', bbox_inches = "tight")
+# # plt.savefig('Project/CMB everything.png')
 
-# Final CIB-lensed CMB correlation plot
 
-plt.plot(ell, correlated_cls / (2 * np.pi * fsky), alpha=0.3)
-plt.errorbar(np.linspace(0, 1024, Nbins), binned_corr_cls / (2 * np.pi * fsky), delta_cls, linestyle='None', marker='o',
-             markersize=4.5, capsize=3)
-plt.plot(np.linspace(0, 1024, Nbins), binned_corr_cls / (2 * np.pi * fsky))
-plt.xlabel('$\ell$')
-plt.ylabel('$C_\ell^{\kappa I}/2 \pi [MJy/Sr] $')
-plt.ylim(-0.05 * (10 ** -7), 0.2 * (10 ** -7))
-# plt.savefig('Project/Correlated everything.png')
+from astropy.io import ascii
+from astropy.table import Table
 
+binned_data_table = Table([binned_CIB, binned_CMB, binned_corr_cls], names=('binned_CIB', 'binned_CMB', 'binned_corr_cls'))
+data_table = Table([cl_CMB_lensing, cl_CIB, correlated_cls, ell], names=('cl_CMB_lensing', 'cl_CIB', 'correlated_cls', 'ell'))
+error_table = Table([delta_cls_CMB, delta_cls, delta_cls_CIB], names=('delta_cls_CMB', 'delta_cls', 'delta_cls_CIB'))
 
-
-plt.plot(ell, ell * correlated_cls / (2 * np.pi * fsky), alpha=0.3)
-plt.errorbar(np.linspace(0, 1024, Nbins), np.linspace(0, 1024, Nbins) * binned_corr_cls / (2 * np.pi * fsky), delta_cls,
-             linestyle='None', marker='o', markersize=4.5, capsize=3)
-plt.plot(np.linspace(0, 1024, Nbins), np.linspace(0, 1024, Nbins) * binned_corr_cls / (2 * np.pi * fsky))
-plt.xlabel('$\ell$')
-plt.ylabel('$C_\ell^{\kappa I}/2 \pi [MJy/Sr] $')
-# plt.ylim(-0.05*(10**-7), 0.2*(10**-7))
-# plt.savefig('Project/Correlated everything.png')
-
-
-# CIB power spectrum 
-
-plt.plot(ell, cl_CIB / (2 * np.pi * fsky_CIB), label='CIB', alpha=0.3)
-plt.errorbar(np.linspace(0, 1024, Nbins), binned_CIB / (2 * np.pi * fsky_CIB), delta_cls_CIB, linestyle='None',
-             marker='o', markersize=4.5, capsize=3)
-plt.plot(np.linspace(0, 1024, Nbins), binned_CIB / (2 * np.pi * fsky_CIB), label='Binned CIB')
-plt.xlabel('$\ell$')
-plt.ylabel('$C_\ell^{II}/2\pi$ [MJy/Sr]')
-plt.legend(loc='best')
-plt.ylim(0, 0.2 * (10 ** -7))
-# plt.savefig('Project/CIB everything.png')
-
-
-# Lensed CMB power spectrum
-
-plt.plot(ell, cl_CMB_lensing / (2 * np.pi * fsky_CMB), label='Lensed CMB', alpha=0.3)
-plt.errorbar(np.linspace(0, 1024, Nbins), binned_CMB / (2 * np.pi * fsky_CMB), delta_cls_CMB, linestyle='None',
-             marker='o', markersize=4.5, capsize=4)
-plt.plot(np.linspace(0, 1024, Nbins), binned_CMB / (2 * np.pi * fsky_CMB), label='Binned Lensed CMB')
-# plt.ylim(0, 5*(10**-7))
-
-plt.xlabel('$\ell$')
-plt.ylabel('$C_\ell^{\kappa \kappa}/2\pi$')
-plt.legend(loc='best')
-plt.ylim(1.5 * (10 ** -7), 4.5 * (10 ** -7))
-# plt.savefig('Project/2pi CMB plot.png', bbox_inches = "tight")
-# plt.savefig('Project/CMB everything.png')
-
+ascii.write(binned_data_table, 'binned data.txt')
+ascii.write(data_table, 'cl data.txt')
+ascii.write(error_table, 'error data.txt')

@@ -98,6 +98,8 @@ plt.ylabel(r'$L C_L^{{\mathrm{CIB}} \times \kappa}$')
 plt.xlabel('$L$')
 plt.show()
 
+print('limber done')
+
 ##################### PLANCK PLOTS ##########################################
 import numpy as np
 import matplotlib.pyplot as plt
@@ -177,33 +179,79 @@ binned_CMB = np.zeros(len(bins) - 1)
 
 binned_full_survey = np.zeros(len(bins) - 1)
 binned_corr_cls_fullsurvey = np.zeros(len(bins) - 1)
-print('binning...')
+# print('binning...')
+#
+# for k in range(0, len(bins) - 1):
+#     lmaxvec = np.arange(bins[k], bins[k + 1], 1)
+#     for l in lmaxvec:
+#         binned_full_survey[k] += cl_full_545[l]
+#     binned_full_survey[k] = binned_full_survey[k] / len(lmaxvec)
+#
+# for k in range(0, len(bins) - 1):
+#     lmaxvec = np.arange(bins[k], bins[k + 1], 1)
+#     lcenterbin[k] = np.round(0.5 * (bins[k] + bins[k + 1]))  # bin center
+#     for l in lmaxvec:
+#         binned_corr_cls_fullsurvey[k] += correlated_cls_fullsurvey[l]
+#
+#     binned_corr_cls_fullsurvey[k] = binned_corr_cls_fullsurvey[k] / len(lmaxvec)
+#
+# fsky_CMB = np.sum(CMB_mask) * 1. / len(CMB_mask)
+# CIB_mask = hp.read_map('COM_Mask_Lensing_2048_R2.00.fits')
+# fsky_CIB = np.sum(CIB_mask) * 1. / len(CIB_mask)
+# mask = CIB_mask * CMB_mask
+# fsky = np.sum(mask) * 1. / len(mask)
+#
+#
+# plt.figure()
+# #plt.plot(ell, correlated_cls)
+# plt.plot(np.linspace(0, 1024, Nbins), binned_corr_cls_fullsurvey)
+# plt.plot(ls, cl_limber*(10**-32))
+# #
+# plt.xlim(10, 1000)
+# # plt.ylim(-1*(10**-7), 1*(10**-7))
+# plt.title('binned correlated power spectrum')
+# plt.xlabel('$\ell$');
+# plt.ylabel('$C_\ell^{\kappa I}$')
+# plt.ylim(-0.000001, 0.000002)
+# plt.show()
+
+
+
+
+#
+print('binning again')
+lcenterbin = np.zeros(len(bins) - 1)
+
+binned_CIB = np.zeros(len(bins) - 1)
+binned_CMB = np.zeros(len(bins) - 1)
+binned_corr_cls = np.zeros(len(bins) - 1)
+
+for k in range(0, len(bins) - 1):
+    lmaxvec = np.arange(bins[k], bins[k + 1], 1)
+
+    for l in lmaxvec:
+        binned_CIB[k] += cl_CIB[l]
+    binned_CIB[k] = binned_CIB[k] / len(lmaxvec)
 
 for k in range(0, len(bins) - 1):
     lmaxvec = np.arange(bins[k], bins[k + 1], 1)
     for l in lmaxvec:
-        binned_full_survey[k] += cl_full_545[l]
-    binned_full_survey[k] = binned_full_survey[k] / len(lmaxvec)
+        binned_CMB[k] += cl_CMB_lensing[l]
+    binned_CMB[k] = binned_CMB[k] / len(lmaxvec)
 
 for k in range(0, len(bins) - 1):
     lmaxvec = np.arange(bins[k], bins[k + 1], 1)
     lcenterbin[k] = np.round(0.5 * (bins[k] + bins[k + 1]))  # bin center
     for l in lmaxvec:
-        binned_corr_cls_fullsurvey[k] += correlated_cls_fullsurvey[l]
+        binned_corr_cls[k] += correlated_cls[l]
 
-    binned_corr_cls_fullsurvey[k] = binned_corr_cls_fullsurvey[k] / len(lmaxvec)
+    binned_corr_cls[k] = binned_corr_cls[k] / len(lmaxvec)
 
-fsky_CMB = np.sum(CMB_mask) * 1. / len(CMB_mask)
-CIB_mask = hp.read_map('COM_Mask_Lensing_2048_R2.00.fits')
-fsky_CIB = np.sum(CIB_mask) * 1. / len(CIB_mask)
-mask = CIB_mask * CMB_mask
-fsky = np.sum(mask) * 1. / len(mask)
-
+print(binned_corr_cls)
 
 plt.figure()
-#plt.plot(ell, correlated_cls)
-plt.plot(np.linspace(0, 1024, Nbins), binned_corr_cls_fullsurvey)
-plt.plot(ls, cl_limber*(10**-33))
+plt.plot(np.linspace(0, 1024, Nbins), binned_corr_cls)
+plt.plot(ls, cl_limber*(10**-32))
 #
 plt.xlim(10, 1000)
 # plt.ylim(-1*(10**-7), 1*(10**-7))
@@ -214,13 +262,12 @@ plt.ylim(-0.000001, 0.000002)
 plt.show()
 
 
-# plt.figure()
-# plt.plot(ell, correlated_cls_fullsurvey / (2 * np.pi * fsky), alpha=0.3)
-# # plt.errorbar(np.linspace(0, 1024, Nbins), binned_corr_cls_fullsurvey/(2*np.pi*fsky), delta_cls, linestyle='None', marker='o', markersize=4.5, capsize=3)
-# plt.plot(np.linspace(0, 1024, Nbins), binned_corr_cls_fullsurvey / (2 * np.pi * fsky))
-# plt.xlabel('$\ell$')
-# plt.ylabel('$C_\ell^{\kappa I}/2 \pi [MJy/Sr] $')
-# plt.ylim(-0.000001, 0.000002)
+plt.figure()
+plt.plot(ell, correlated_cls_fullsurvey / (2 * np.pi * fsky), alpha=0.3)
+# plt.errorbar(np.linspace(0, 1024, Nbins), binned_corr_cls_fullsurvey/(2*np.pi*fsky), delta_cls, linestyle='None', marker='o', markersize=4.5, capsize=3)
+plt.plot(np.linspace(0, 1024, Nbins), binned_corr_cls_fullsurvey / (2 * np.pi * fsky))
+plt.xlabel('$\ell$')
+plt.ylabel('$C_\ell^{\kappa I}/2 \pi [MJy/Sr] $')
 # plt.show()
 
 
